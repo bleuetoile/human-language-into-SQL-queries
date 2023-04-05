@@ -1,0 +1,52 @@
+ Here's an example of how you could build an app that converts natural language queries into SQL statements using Python:
+ 
+ import re
+
+# Define a function to parse natural language queries and generate SQL statements
+def generate_sql(query):
+    # Define some regular expressions to match common query types and extract relevant information
+    select_regex = re.compile(r"(?i)select\s(.+)\sfrom\s(.+)\swhere\s(.+)")
+    insert_regex = re.compile(r"(?i)insert\sinto\s(.+)\s\((.+)\)\svalues\s\((.+)\)")
+    update_regex = re.compile(r"(?i)update\s(.+)\sset\s(.+)\swhere\s(.+)")
+    delete_regex = re.compile(r"(?i)delete\sfrom\s(.+)\swhere\s(.+)")
+    
+    # Use regular expressions to match the query type and extract relevant information
+    if select_regex.match(query):
+        matches = select_regex.match(query)
+        columns = matches.group(1)
+        table = matches.group(2)
+        conditions = matches.group(3)
+        sql_query = f"SELECT {columns} FROM {table} WHERE {conditions}"
+    elif insert_regex.match(query):
+        matches = insert_regex.match(query)
+        table = matches.group(1)
+        columns = matches.group(2)
+        values = matches.group(3)
+        sql_query = f"INSERT INTO {table} ({columns}) VALUES ({values})"
+    elif update_regex.match(query):
+        matches = update_regex.match(query)
+        table = matches.group(1)
+        columns = matches.group(2)
+        conditions = matches.group(3)
+        sql_query = f"UPDATE {table} SET {columns} WHERE {conditions}"
+    elif delete_regex.match(query):
+        matches = delete_regex.match(query)
+        table = matches.group(1)
+        conditions = matches.group(2)
+        sql_query = f"DELETE FROM {table} WHERE {conditions}"
+    else:
+        sql_query = "Invalid query"
+    
+    return sql_query
+
+    
+    You can then call this function with a natural language query to generate a SQL statement. For example:
+    
+    query = "Select name, age from users where age > 25"
+sql_query = generate_sql(query)
+print(sql_query)
+
+
+This would output the following SQL statement:
+
+SELECT name, age FROM users WHERE age > 25
